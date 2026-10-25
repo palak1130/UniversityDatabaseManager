@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}University Database Manager{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+        <h2>🎓 University</h2>
+        <p class="brand-subtitle">Database Manager</p>
+
+        <nav>
+            <a href="{{ url_for('home') }}">⌂ Dashboard</a>
+            <a href="{{ url_for('view_table', table='Department') }}">▦ Departments</a>
+            <a href="{{ url_for('view_table', table='Student') }}">♙ Students</a>
+            <a href="{{ url_for('view_table', table='Instructor') }}">♙ Instructors</a>
+            <a href="{{ url_for('view_table', table='Course') }}">▤ Courses</a>
+            <a href="{{ url_for('view_table', table='Section') }}">▣ Sections</a>
+            <a href="{{ url_for('view_table', table='Enrollment') }}">☷ Enrollments</a>
+            <a href="{{ url_for('view_table', table='Exam') }}">✎ Exams</a>
+            <a href="{{ url_for('view_table', table='Result') }}">★ Results</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <span>University Administration</span>
+            <span class="admin-label">Admin</span>
+        </header>
+
+        <section class="page-content">
+
+            <!-- Success and error messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <!-- Individual page content -->
+            {% block content %}{% endblock %}
+
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Add {{ table }} | University Database Manager{% endblock %}
+
+{% block content %}
+
+<h1>{{ 'Edit' if is_edit else 'Add' }} {{ table }}</h1>
+
+<p class="page-description">Enter the details for the new record.</p>
+
+<div class="panel">
+    {% if error %}
+    <p class="error-message">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="record-form">
+        {% for column in columns %}
+        <label for="{{ column }}">{{ column.replace('_', ' ')|title }}</label>
+
+
+        <input type="text" name="{{ column }}" value="{{ record[column] if record and column in record else '' }}">
+
+        {% endfor %}
+
+        <button type="submit" class="btn">Save Record</button>
+        <a class="btn cancel-btn" href="{{ url_for('view_table', table=table) }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

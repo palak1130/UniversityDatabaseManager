@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | University Database Manager{% endblock %}
+
+{% block content %}
+<h1 class="page-heading">Welcome to University Database Manager</h1>
+<p class="page-description">
+    Manage university records efficiently from one place.
+</p>
+
+<div class="stats-grid">
+    {% for table, count in stats.items() %}
+    <div class="stat-card">
+        <h3>{{ table }}</h3>
+        <p>{{ count }}</p>
+        <a class="btn"
+           href="{{ url_for('view_table', table=table) }}">
+            View Records
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="panel">
+    <h2>Database Overview</h2>
+    <p>
+        Your dashboard is connected to the university's academic
+        database. Select a category from the sidebar to manage records.
+    </p>
+</div>
+{% endblock %}

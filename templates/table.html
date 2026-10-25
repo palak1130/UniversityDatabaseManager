@@ -1,0 +1,127 @@
+ 
+{% extends "base.html" %}
+
+{% block title %}{{ table }} | University Database Manager{% endblock %}
+
+{% block content %}
+
+<!-- Table heading and Add Record button -->
+<div style="display:flex; justify-content:space-between;
+            align-items:center; gap:15px; flex-wrap:wrap;">
+    <div>
+        <h1 class="page-heading">{{ table }} Table</h1>
+        <p class="page-description">
+            Total records: {{ records|length }}
+        </p>
+    </div>
+
+    <a class="btn" href="{{ url_for('add_record', table=table) }}">
+        + Add Record
+    </a>
+</div>
+
+<!-- Search panel -->
+<div class="panel">
+
+    <form method="GET"
+          action="{{ url_for('view_table', table=table) }}"
+          class="search-form">
+
+        <input type="text"
+               name="search"
+               placeholder="Search {{ table }} records..."
+               value="{{ search }}">
+
+        <button type="submit" class="btn">Search</button>
+
+        {% if search %}
+            <a class="btn clear-btn"
+               href="{{ url_for('view_table', table=table) }}">
+                Clear
+            </a>
+        {% endif %}
+    </form>
+
+    <p class="page-description">
+        {% if search %}
+            Showing {{ records|length }} matching records for "{{ search }}".
+        {% else %}
+            Showing {{ records|length }} records.
+        {% endif %}
+    </p>
+
+</div>
+
+<!-- Records table -->
+<div class="panel">
+    <div style="overflow-x:auto;">
+        <table>
+
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th>{{ column.replace('_', ' ')|title }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in records %}
+                    <tr>
+                        {% for column in columns %}
+                            <td>
+                                {{ record[column] if record[column] is not none else '-' }}
+                            </td>
+                        {% endfor %}
+
+                        <td class="action-buttons">
+
+                            <!-- Edit button for currently supported tables -->
+                            {% if table in [
+                                'Department', 'Student', 'Instructor',
+                                'Course', 'Section', 'Exam'
+                            ] %}
+                                <a class="btn edit-btn"
+                                   href="{{ url_for(
+                                       'edit_record',
+                                       table=table,
+                                       record_id=record[columns[0]]
+                                   ) }}">
+                                    Edit
+                                </a>
+                            {% endif %}
+
+                            <!-- Delete button for all 8 tables -->
+                            <form method="POST"
+                                  action="{{ url_for('delete_record', table=table) }}"
+                                  onsubmit="return confirm('Are you sure you want to delete this record?');">
+
+                                {% for key in delete_keys %}
+                                    <input type="hidden"
+                                           name="{{ key }}"
+                                           value="{{ record[key] }}">
+                                {% endfor %}
+
+                                <button type="submit" class="btn delete-btn">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+
+                {% else %}
+                    <tr>
+                        <td colspan="{{ columns|length + 1 }}">
+                            No records found in this table.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+{% endblock %}
